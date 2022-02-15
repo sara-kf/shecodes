@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,12 +40,7 @@
         padding: 10px 50px 10px 50px;
         margin-top: 50px;
       }
-      h2 {
-        font-family: "Pacifico", cursive;
-        text-align: center;
-        margin-top: 100px;
-        font-size: 50px;
-      }
+     
       h3 {
         font-family: "Abril Fatface", cursive;
 
@@ -52,10 +48,10 @@
         text-align: center;
         margin-top: 150px;
       }
-      h4 {
+      #city {
         font-family: "Neonderthaw", cursive;
         font-size: 50px;
-        margin-top: 120px;
+        margin-top:120px;
         text-align: center;
       }
       #shahr {
@@ -92,6 +88,31 @@
   max-width: 650px;
   border-radius: 10px;
 }
+#degreeschange {
+   
+  font-weight: 500;
+  font-family: cursive;
+        font-size: 50px;
+        margin-top: 90px;
+        text-align: center;
+}
+#weather-description {
+    font-weight: 100;
+  font-family: cursive;
+        font-size: 25px;
+        margin-top: 10px;
+        text-align: center;
+}
+#location-button {
+  background-color: white;
+  transition: all 200ms ease-in-out;
+  border: none;
+}
+#location-button:hover {
+  transition: all 200ms ease-in-out;
+  background-color: lightgrey;
+}
+
     </style>
   </head>
   <body>
@@ -118,7 +139,7 @@
       
     </div>
     
-    <h2>2°C</h2>
+   
 
     <h3>
       saturday 22:05
@@ -128,10 +149,23 @@
       <input type="text" autofocus="on" id="shahr" />
       <input type="submit" value="SEARCH" id="dokme" />
     </form>
+ <button
+                    type="button"
+                    class="btn btn-light"
+                    id="location-button"
+                  >
+                    <i class="fas fa-location-arrow"></i>
+                  </button>
+     
+           <h4 id="city">Porto</h4>
+          
+     <p class="weather-description" id="weather-description">
+            Sunny with intermittent clouds
+          </p>
 
-    <h4>rasht</h4>
-
-   
+   <span class="degrees" id="degreeschange">  22° </span>
+          
+          
      <div class="col-12" id="right">
           <h3>Weekly forecast</h3>
           <hr />
@@ -149,45 +183,7 @@
     <br />
     <br />
     <script>
-      let weather = {
-        paris: {
-          temp: 19.7,
-          humidity: 80,
-        },
-        tokyo: {
-          temp: 17.3,
-          humidity: 50,
-        },
-        lisbon: {
-          temp: 30.2,
-          humidity: 20,
-        },
-        "san francisco": {
-          temp: 20.9,
-          humidity: 100,
-        },
-        moscow: {
-          temp: -5,
-          humidity: 20,
-        },
-      };
-
-      let city = prompt("Enter a city?");
-      city = city.toLowerCase();
-      if (weather[city] !== undefined) {
-        let temperature = weather[city].temp;
-        let humidity = weather[city].humidity;
-        let celsiusTemperature = Math.round(temperature);
-        let fahrenheitTemperature = Math.round((temperature * 9) / 5 + 32);
-
-        alert(
-          `It is currently ${celsiusTemperature}°C (${fahrenheitTemperature}°F) in ${city} with a humidity of ${humidity}%`
-        );
-      } else {
-        alert(
-          `Sorry we don't know the weather for this city, try going to https://www.google.com/search?q=weather+${city}`
-        );
-      }
+     
       let now = new Date();
       let days = [
         "Sunday",
@@ -210,14 +206,45 @@
       let h3 = document.querySelector("h3");
       h3.innerHTML = `${day} ${hour}:${minute}`;
 
-      function getCity(event) {
-        event.preventDefault();
-        let input = document.querySelector("#shahr");
-        let h4 = document.querySelector("h4");
-        h4.innerHTML = input.value;
-      }
-      let shahr = document.querySelector("#city-search");
-      shahr.addEventListener("submit", getCity);
+      function showTemp(response) {
+  let temperature = Math.round(response.data.main.temp);
+  let changeTemp = document.querySelector("#degreeschange");
+  changeTemp.innerHTML = `${temperature}`;
+  let weatherDescription = response.data.weather[0].description;
+  let updatedDescription = document.querySelector("#weather-description");
+  updatedDescription.innerHTML = `${weatherDescription}`;
+  let city = document.querySelector("#city");
+  let changedCity = response.data.name;
+  city.innerHTML = `${changedCity}`;
+}
+function search(event) {
+  event.preventDefault();
+  let updated = document.querySelector("#city");
+  let newCity = document.querySelector("#shahr");
+  updated.innerHTML = `${newCity.value}`;
+  let apiKey = "2351e68acff675649246aa4f8bbdd4e3";
+  let url = `https://api.openweathermap.org/data/2.5/weather?q=${newCity.value}&appid=${apiKey}&units=metric`;
+  axios.get(url).then(showTemp);
+}
+let enterCity = document.querySelector("#city-search");
+enterCity.addEventListener("submit", search);
+
+function currentLocation(position) {
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
+  let apiKey = "2351e68acff675649246aa4f8bbdd4e3";
+  let url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+  axios.get(url).then(showTemp);
+}
+function geoLocation() {
+  navigator.geolocation.getCurrentPosition(currentLocation);
+}
+let locationButton = document.querySelector("#location-button");
+locationButton.addEventListener("click", geoLocation);       
+
     </script>
   </body>
 </html>
+
+
+
