@@ -54,10 +54,28 @@
         margin-top:120px;
         text-align: center;
       }
+      .units {
+         font-family:  cursive;
+        font-size: 20px
+
+       margin = top 90px;
+
+        text-align: center;
+      }
       #shahr {
         display: block;
         margin: 0 auto;
         margin-top: 50px;
+      }
+      #windSpeed {
+display: block;
+        margin-left: 260px;
+        margin-top: 50px;
+        font-family: "Abril Fatface", cursive;
+      }
+      #icon {
+        display: block;
+        margin: auto;
       }
       #dokme {
         display: block;
@@ -156,14 +174,27 @@
                   >
                     <i class="fas fa-location-arrow"></i>
                   </button>
+                  <div class="weatherIcon">
+<img src="https://s3.amazonaws.com/shecodesio-production/uploads/files/000/027/883/original/weather-rain-season-cloud-rainy-1-28907.png?1645629557"
+alt="rainy" class="float-middle" id="icon" />
+                  </div>
      
            <h4 id="city">Porto</h4>
+           
+             <ul>
+               <li id="windSpeed">
+                 wind: <span id="wind"></span> km/h
+               </li>
+             </ul>
           
      <p class="weather-description" id="weather-description">
             Sunny with intermittent clouds
           </p>
 
    <span class="degrees" id="degreeschange">  22° </span>
+  
+   <span class="units" > °C / <a href="#" id="fahrenheit-link"> °F </a>  </span>
+  
           
           
      <div class="col-12" id="right">
@@ -216,6 +247,15 @@
   let city = document.querySelector("#city");
   let changedCity = response.data.name;
   city.innerHTML = `${changedCity}`;
+
+  let windElement = document.querySelector("#wind")
+  wind.innerHTML = Math.round(response.data.wind.speed)
+    let iconElement = document.querySelector("#icon")
+    iconElement.setAttribute(
+      "src" ,
+      ` https://openweathermap.org/img/wn/${response.data.weather[0].icon}/04d@2x.png `
+      ) ;
+  
 }
 function search(event) {
   event.preventDefault();
@@ -239,9 +279,17 @@ function currentLocation(position) {
 function geoLocation() {
   navigator.geolocation.getCurrentPosition(currentLocation);
 }
+function showFahrenheitTemp(event) {
+event.preventDefault()
+let FahrenheitTemp = (22 * 9) /5 + 32; 
+let tempretureElement = document.querySelector("#degreeschange")
+tempretureElement.innerHTML = FahrenheitTemp
+}
+
 let locationButton = document.querySelector("#location-button");
 locationButton.addEventListener("click", geoLocation);       
-
+let fahrenheitLink = document.querySelector("#fahrenheit-link")
+fahrenheitLink.addEventListener("click" , showFahrenheitTemp)
     </script>
   </body>
 </html>
