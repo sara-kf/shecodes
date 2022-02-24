@@ -180,7 +180,7 @@ display: block;
                     <i class="fas fa-location-arrow"></i>
                   </button>
                   <div class="weatherIcon">
-<img src="https://s3.amazonaws.com/shecodesio-production/uploads/files/000/027/883/original/weather-rain-season-cloud-rainy-1-28907.png?1645629557"
+<img src="http://openweathermap.org/img/wn/01d@2x.png"
 alt="rainy" class="float-middle" id="icon" />
                   </div>
      
@@ -262,10 +262,11 @@ alt="rainy" class="float-middle" id="icon" />
   wind.innerHTML = Math.round(response.data.wind.speed)
     let iconElement = document.querySelector("#icon")
     iconElement.setAttribute(
-      "src" ,
-      ` https://openweathermap.org/img/wn/${response.data.weather[0].icon}/04d@2x.png `
-      ) ;
-  
+    "src",
+    `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`
+  );
+  iconElement.setAttribute("alt", response.data.weather[0].description);
+
 }
 function search(event) {
   event.preventDefault();
